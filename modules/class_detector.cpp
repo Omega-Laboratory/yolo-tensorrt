@@ -20,9 +20,8 @@ Detector::~Detector() {
   }
 }
 
-void Detector::init(const Config &config) { _impl->_detector.init(config); }
+void Detector::init(const Config& config) { _impl->_detector.init(config); }
 
-void Detector::detect(const cv::Mat &mat_image,
-                      std::vector<Result> &vec_result) {
+void Detector::detect(const cv::Mat& mat_image, std::vector<Result>& vec_result) {
   _impl->_detector.detect(mat_image, vec_result);
 }

@@ -6,8 +6,9 @@
 #include <chrono>
 #include <experimental/filesystem>
 #include <fstream>
-#include <opencv2/opencv.hpp>
 #include <string>
+
+#include <opencv2/opencv.hpp>
 
 #include "class_detector.h"
 #include "ds_image.h"
@@ -61,7 +62,7 @@ class YoloDectector {
   YoloDectector() {}
   ~YoloDectector() {}
 
-  void init(const Config &config) {
+  void init(const Config& config) {
     _config = config;
 
     this->set_gpu_id(_config.gpu_id);
@@ -71,21 +72,17 @@ class YoloDectector {
     this->build_net();
   }
 
-  void detect(const cv::Mat &mat_image, std::vector<Result> &vec_result) {
+  void detect(const cv::Mat& mat_image, std::vector<Result>& vec_result) {
     std::vector<DsImage> vec_ds_images;
     vec_result.clear();
-    vec_ds_images.emplace_back(mat_image, _p_net->getInputH(),
-                               _p_net->getInputW());
-    cv::Mat trtInput = blobFromDsImages(vec_ds_images, _p_net->getInputH(),
-                                        _p_net->getInputW());
+    vec_ds_images.emplace_back(mat_image, _p_net->getInputH(), _p_net->getInputW());
+    cv::Mat trtInput = blobFromDsImages(vec_ds_images, _p_net->getInputH(), _p_net->getInputW());
     _p_net->doInference(trtInput.data, vec_ds_images.size());
     for (uint32_t i = 0; i < vec_ds_images.size(); ++i) {
       auto curImage = vec_ds_images.at(i);
-      auto binfo = _p_net->decodeDetections(i, curImage.getImageHeight(),
-                                            curImage.getImageWidth());
-      auto remaining =
-          nmsAllClasses(_p_net->getNMSThresh(), binfo, _p_net->getNumClasses());
-      for (const auto &b : remaining) {
+      auto binfo = _p_net->decodeDetections(i, curImage.getImageHeight(), curImage.getImageWidth());
+      auto remaining = nmsAllClasses(_p_net->getNMSThresh(), binfo, _p_net->getNumClasses());
+      for (const auto& b : remaining) {
         Result res;
         res.id = b.label;
         res.prob = b.prob;
@@ -103,8 +100,7 @@ class YoloDectector {
   void set_gpu_id(const int id = 0) {
     cudaError_t status = cudaSetDevice(id);
     if (status != cudaSuccess) {
-      std::cout << "gpu id :" + std::to_string(id) + " not exist !"
-                << std::endl;
+      std::cout << "gpu id :" + std::to_string(id) + " not exist !" << std::endl;
       assert(0);
     }
   }
@@ -116,9 +112,7 @@ class YoloDectector {
     _yolo_info.precision = _vec_precision[_config.inference_precison];
     _yolo_info.deviceType = "kGPU";
     size_t npos = _yolo_info.wtsFilePath.find(".weights");
-    assert(
-        npos != std::string::npos &&
-        "wts file file not recognised. File needs to be of '.weights' format");
+    assert(npos != std::string::npos && "wts file file not recognised. File needs to be of '.weights' format");
     std::string dataPath = _yolo_info.wtsFilePath.substr(0, npos);
     _yolo_info.calibrationTablePath = dataPath + "-calibration.table";
     _yolo_info.enginePath = dataPath + "-" + _yolo_info.precision + ".engine";
@@ -135,8 +129,7 @@ class YoloDectector {
   void build_net() {
     if ((_config.net_type == YOLOV2) || (_config.net_type == YOLOV2_TINY)) {
       _p_net = std::unique_ptr<Yolo>{new YoloV2(1, _yolo_info, _infer_param)};
-    } else if ((_config.net_type == YOLOV3) ||
-               (_config.net_type == YOLOV3_TINY)) {
+    } else if ((_config.net_type == YOLOV3) || (_config.net_type == YOLOV3_TINY)) {
       _p_net = std::unique_ptr<Yolo>{new YoloV3(1, _yolo_info, _infer_param)};
     } else {
       assert(false &&
@@ -150,8 +143,7 @@ class YoloDectector {
   NetworkInfo _yolo_info;
   InferParams _infer_param;
 
-  std::vector<std::string> _vec_net_type{"yolov2", "yolov3", "yolov2-tiny",
-                                         "yolov3-tiny"};
+  std::vector<std::string> _vec_net_type{"yolov2", "yolov3", "yolov2-tiny", "yolov3-tiny"};
   std::vector<std::string> _vec_precision{"kINT8", "kHALF", "kFLOAT"};
   std::unique_ptr<Yolo> _p_net = nullptr;
 };

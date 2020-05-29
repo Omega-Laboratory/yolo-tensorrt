@@ -26,9 +26,9 @@ SOFTWARE.
 #ifndef _YOLO_CONFIG_PARSER_
 #define _YOLO_CONFIG_PARSER_
 
-#include <gflags/gflags.h>
-
 #include <ctime>
+
+#include <gflags/gflags.h>
 
 #include "yolo.h"
 

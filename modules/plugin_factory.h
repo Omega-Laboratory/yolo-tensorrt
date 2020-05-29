@@ -35,28 +35,24 @@ SOFTWARE.
 
 #include "NvInferPlugin.h"
 
-#define NV_CUDA_CHECK(status)                                         \
-  {                                                                   \
-    if (status != 0) {                                                \
-      std::cout << "Cuda failure: " << cudaGetErrorString(status)     \
-                << " in file " << __FILE__ << " at line " << __LINE__ \
-                << std::endl;                                         \
-      abort();                                                        \
-    }                                                                 \
+#define NV_CUDA_CHECK(status)                                                                               \
+  {                                                                                                         \
+    if (status != 0) {                                                                                      \
+      std::cout << "Cuda failure: " << cudaGetErrorString(status) << " in file " << __FILE__ << " at line " \
+                << __LINE__ << std::endl;                                                                   \
+      abort();                                                                                              \
+    }                                                                                                       \
   }
 
 // Forward declaration of cuda kernels
-cudaError_t cudaYoloLayerV3(const void* input, void* output,
-                            const uint32_t& batchSize, const uint32_t& gridSize,
-                            const uint32_t& numOutputClasses,
-                            const uint32_t& numBBoxes, uint64_t outputSize,
+cudaError_t cudaYoloLayerV3(const void* input, void* output, const uint32_t& batchSize, const uint32_t& gridSize,
+                            const uint32_t& numOutputClasses, const uint32_t& numBBoxes, uint64_t outputSize,
                             cudaStream_t stream);
 
 class PluginFactory : public nvinfer1::IPluginFactory {
  public:
   PluginFactory();
-  nvinfer1::IPlugin* createPlugin(const char* layerName, const void* serialData,
-                                  size_t serialLength) override;
+  nvinfer1::IPlugin* createPlugin(const char* layerName, const void* serialData, size_t serialLength) override;
   bool isPlugin(const char* name);
   void destroy();
 
@@ -70,8 +66,7 @@ class PluginFactory : public nvinfer1::IPluginFactory {
   static const int m_MaxYoloLayers = 3;
   int m_LeakyReLUCount = 0;
   int m_YoloLayerCount = 0;
-  nvinfer1::plugin::RegionParameters m_RegionParameters{m_NumBoxes, m_NumCoords,
-                                                        m_NumClasses, nullptr};
+  nvinfer1::plugin::RegionParameters m_RegionParameters{m_NumBoxes, m_NumCoords, m_NumClasses, nullptr};
 
   struct INvPluginDeleter {
     void operator()(nvinfer1::plugin::INvPlugin* ptr) {
@@ -87,8 +82,7 @@ class PluginFactory : public nvinfer1::IPluginFactory {
       }
     }
   };
-  typedef std::unique_ptr<nvinfer1::plugin::INvPlugin, INvPluginDeleter>
-      unique_ptr_INvPlugin;
+  typedef std::unique_ptr<nvinfer1::plugin::INvPlugin, INvPluginDeleter> unique_ptr_INvPlugin;
   typedef std::unique_ptr<nvinfer1::IPlugin, IPluginDeleter> unique_ptr_IPlugin;
 
   unique_ptr_INvPlugin m_ReorgLayer;
@@ -100,19 +94,16 @@ class PluginFactory : public nvinfer1::IPluginFactory {
 class YoloLayerV3 : public nvinfer1::IPlugin {
  public:
   YoloLayerV3(const void* data, size_t length);
-  YoloLayerV3(const uint32_t& numBoxes, const uint32_t& numClasses,
-              const uint32_t& gridSize);
+  YoloLayerV3(const uint32_t& numBoxes, const uint32_t& numClasses, const uint32_t& gridSize);
   int getNbOutputs() const override;
-  nvinfer1::Dims getOutputDimensions(int index, const nvinfer1::Dims* inputs,
-                                     int nbInputDims) override;
-  void configure(const nvinfer1::Dims* inputDims, int nbInputs,
-                 const nvinfer1::Dims* outputDims, int nbOutputs,
+  nvinfer1::Dims getOutputDimensions(int index, const nvinfer1::Dims* inputs, int nbInputDims) override;
+  void configure(const nvinfer1::Dims* inputDims, int nbInputs, const nvinfer1::Dims* outputDims, int nbOutputs,
                  int maxBatchSize) override;
   int initialize() override;
   void terminate() override;
   size_t getWorkspaceSize(int maxBatchSize) const override;
-  int enqueue(int batchSize, const void* const* intputs, void** outputs,
-              void* workspace, cudaStream_t stream) override;
+  int enqueue(int batchSize, const void* const* intputs, void** outputs, void* workspace,
+              cudaStream_t stream) override;
   size_t getSerializationSize() override;
   void serialize(void* buffer) override;
 

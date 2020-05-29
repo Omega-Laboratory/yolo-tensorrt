@@ -78,12 +78,10 @@ struct YoloPluginOutput {
 };
 
 // Initialize library context
-YoloPluginCtx* YoloPluginCtxInit(YoloPluginInitParams* initParams,
-                                 size_t batchSize);
+YoloPluginCtx* YoloPluginCtxInit(YoloPluginInitParams* initParams, size_t batchSize);
 
 // Dequeue processed output
-std::vector<YoloPluginOutput*> YoloPluginProcess(YoloPluginCtx* ctx,
-                                                 std::vector<cv::Mat*>& cvmats);
+std::vector<YoloPluginOutput*> YoloPluginProcess(YoloPluginCtx* ctx, std::vector<cv::Mat*>& cvmats);
 
 // Deinitialize library context
 void YoloPluginCtxDeinit(YoloPluginCtx* ctx);

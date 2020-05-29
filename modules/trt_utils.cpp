@@ -29,25 +29,20 @@ SOFTWARE.
 #include <fstream>
 #include <iomanip>
 
-cv::Mat blobFromDsImages(const std::vector<DsImage>& inputImages,
-                         const int& inputH, const int& inputW) {
+cv::Mat blobFromDsImages(const std::vector<DsImage>& inputImages, const int& inputH, const int& inputW) {
   std::vector<cv::Mat> letterboxStack(inputImages.size());
   for (uint32_t i = 0; i < inputImages.size(); ++i) {
     inputImages.at(i).getLetterBoxedImage().copyTo(letterboxStack.at(i));
   }
-  return cv::dnn::blobFromImages(letterboxStack, 1.0, cv::Size(inputW, inputH),
-                                 cv::Scalar(0.0, 0.0, 0.0), true);
+  return cv::dnn::blobFromImages(letterboxStack, 1.0, cv::Size(inputW, inputH), cv::Scalar(0.0, 0.0, 0.0), true);
 }
 
 static void leftTrim(std::string& s) {
-  s.erase(s.begin(),
-          find_if(s.begin(), s.end(), [](int ch) { return !isspace(ch); }));
+  s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return !isspace(ch); }));
 }
 
 static void rightTrim(std::string& s) {
-  s.erase(
-      find_if(s.rbegin(), s.rend(), [](int ch) { return !isspace(ch); }).base(),
-      s.end());
+  s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return !isspace(ch); }).base(), s.end());
 }
 
 std::string trim(std::string s) {
@@ -62,16 +57,15 @@ float clamp(const float val, const float minVal, const float maxVal) {
 }
 
 bool fileExists(const std::string fileName, bool verbose) {
-  if (!std::experimental::filesystem::exists(
-          std::experimental::filesystem::path(fileName))) {
-    if (verbose) std::cout << "File does not exist : " << fileName << std::endl;
+  if (!std::experimental::filesystem::exists(std::experimental::filesystem::path(fileName))) {
+    if (verbose)
+      std::cout << "File does not exist : " << fileName << std::endl;
     return false;
   }
   return true;
 }
 
-BBox convertBBoxNetRes(const float& bx, const float& by, const float& bw,
-                       const float& bh, const uint32_t& stride,
+BBox convertBBoxNetRes(const float& bx, const float& by, const float& bw, const float& bh, const uint32_t& stride,
                        const uint32_t& netW, const uint32_t& netH) {
   BBox b;
   // Restore coordinates to network input resolution
@@ -95,9 +89,8 @@ BBox convertBBoxNetRes(const float& bx, const float& by, const float& bw,
 void convertBBoxImgRes(const float scalingFactor,
                        // const float& xOffset,
                        //	const float& yOffset,
-                       const uint32_t& input_w_, const uint32_t& input_h_,
-                       const uint32_t& image_w_, const uint32_t& image_h_,
-                       BBox& bbox) {
+                       const uint32_t& input_w_, const uint32_t& input_h_, const uint32_t& image_w_,
+                       const uint32_t& image_h_, BBox& bbox) {
   //// Undo Letterbox
   // bbox.x1 -= xOffset;
   // bbox.x2 -= xOffset;
@@ -117,8 +110,7 @@ void convertBBoxImgRes(const float scalingFactor,
 
 void printPredictions(const BBoxInfo& b, const std::string& className) {
   std::cout << " label:" << b.label << "(" << className << ")"
-            << " confidence:" << b.prob << " xmin:" << b.box.x1
-            << " ymin:" << b.box.y1 << " xmax:" << b.box.x2
+            << " confidence:" << b.prob << " xmin:" << b.box.x1 << " ymin:" << b.box.y1 << " xmax:" << b.box.x2
             << " ymax:" << b.box.y2 << std::endl;
 }
 
@@ -144,8 +136,7 @@ std::vector<std::string> loadListFromTextFile(const std::string filename) {
   return list;
 }
 
-std::vector<std::string> loadImageList(const std::string filename,
-                                       const std::string prefix) {
+std::vector<std::string> loadImageList(const std::string filename, const std::string prefix) {
   std::vector<std::string> fileList = loadListFromTextFile(filename);
   for (auto& file : fileList) {
     if (fileExists(file, false))
@@ -155,15 +146,13 @@ std::vector<std::string> loadImageList(const std::string filename,
       if (fileExists(prefixed, false))
         file = prefixed;
       else
-        std::cerr << "WARNING: couldn't find: " << prefixed
-                  << " while loading: " << filename << std::endl;
+        std::cerr << "WARNING: couldn't find: " << prefixed << " while loading: " << filename << std::endl;
     }
   }
   return fileList;
 }
 
-std::vector<BBoxInfo> nmsAllClasses(const float nmsThresh,
-                                    std::vector<BBoxInfo>& binfo,
+std::vector<BBoxInfo> nmsAllClasses(const float nmsThresh, std::vector<BBoxInfo>& binfo,
                                     const uint32_t numClasses) {
   std::vector<BBoxInfo> result;
   std::vector<std::vector<BBoxInfo>> splitBoxes(numClasses);
@@ -179,10 +168,8 @@ std::vector<BBoxInfo> nmsAllClasses(const float nmsThresh,
   return result;
 }
 
-std::vector<BBoxInfo> nonMaximumSuppression(const float nmsThresh,
-                                            std::vector<BBoxInfo> binfo) {
-  auto overlap1D = [](float x1min, float x1max, float x2min,
-                      float x2max) -> float {
+std::vector<BBoxInfo> nonMaximumSuppression(const float nmsThresh, std::vector<BBoxInfo> binfo) {
+  auto overlap1D = [](float x1min, float x1max, float x2min, float x2max) -> float {
     if (x1min > x2min) {
       std::swap(x1min, x2min);
       std::swap(x1max, x2max);
@@ -199,9 +186,8 @@ std::vector<BBoxInfo> nonMaximumSuppression(const float nmsThresh,
     return u == 0 ? 0 : overlap2D / u;
   };
 
-  std::stable_sort(
-      binfo.begin(), binfo.end(),
-      [](const BBoxInfo& b1, const BBoxInfo& b2) { return b1.prob > b2.prob; });
+  std::stable_sort(binfo.begin(), binfo.end(),
+                   [](const BBoxInfo& b1, const BBoxInfo& b2) { return b1.prob > b2.prob; });
   std::vector<BBoxInfo> out;
   for (auto& i : binfo) {
     bool keep = true;
@@ -212,13 +198,13 @@ std::vector<BBoxInfo> nonMaximumSuppression(const float nmsThresh,
       } else
         break;
     }
-    if (keep) out.push_back(i);
+    if (keep)
+      out.push_back(i);
   }
   return out;
 }
 
-nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath,
-                                     PluginFactory* pluginFactory,
+nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath, PluginFactory* pluginFactory,
                                      Logger& logger) {
   // reading the model in memory
   std::cout << "Loading TRT Engine..." << std::endl;
@@ -238,8 +224,7 @@ nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath,
   trtModelStream.read((char*)modelMem, modelSize);
 
   nvinfer1::IRuntime* runtime = nvinfer1::createInferRuntime(logger);
-  nvinfer1::ICudaEngine* engine =
-      runtime->deserializeCudaEngine(modelMem, modelSize, pluginFactory);
+  nvinfer1::ICudaEngine* engine = runtime->deserializeCudaEngine(modelMem, modelSize, pluginFactory);
   free(modelMem);
   runtime->destroy();
   std::cout << "Loading Complete!" << std::endl;
@@ -263,8 +248,7 @@ nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath,
 //		file.ignore(15);
 //	}
 //}
-std::vector<float> loadWeights(const std::string weightsFilePath,
-                               const std::string& networkType) {
+std::vector<float> loadWeights(const std::string weightsFilePath, const std::string& networkType) {
   assert(fileExists(weightsFilePath));
   std::cout << "Loading pre-trained weights..." << std::endl;
   // std::ifstream file(weightsFilePath, std::ios_base::binary);
@@ -303,7 +287,8 @@ std::vector<float> loadWeights(const std::string weightsFilePath,
     file.read(floatWeight, 4);
     assert(file.gcount() == 4);
     weights.push_back(*reinterpret_cast<float*>(floatWeight));
-    if (file.peek() == std::istream::traits_type::eof()) break;
+    if (file.peek() == std::istream::traits_type::eof())
+      break;
   }
   std::cout << "Loading complete!" << std::endl;
   delete[] floatWeight;
@@ -357,9 +342,7 @@ uint64_t get3DTensorVolume(nvinfer1::Dims inputDims) {
   return inputDims.d[0] * inputDims.d[1] * inputDims.d[2];
 }
 
-nvinfer1::ILayer* netAddMaxpool(int layerIdx,
-                                std::map<std::string, std::string>& block,
-                                nvinfer1::ITensor* input,
+nvinfer1::ILayer* netAddMaxpool(int layerIdx, std::map<std::string, std::string>& block, nvinfer1::ITensor* input,
                                 nvinfer1::INetworkDefinition* network) {
   assert(block.at("type") == "maxpool");
   assert(block.find("size") != block.end());
@@ -368,8 +351,8 @@ nvinfer1::ILayer* netAddMaxpool(int layerIdx,
   int size = std::stoi(block.at("size"));
   int stride = std::stoi(block.at("stride"));
 
-  nvinfer1::IPoolingLayer* pool = network->addPooling(
-      *input, nvinfer1::PoolingType::kMAX, nvinfer1::DimsHW{size, size});
+  nvinfer1::IPoolingLayer* pool =
+      network->addPooling(*input, nvinfer1::PoolingType::kMAX, nvinfer1::DimsHW{size, size});
   assert(pool);
   std::string maxpoolLayerName = "maxpool_" + std::to_string(layerIdx);
   pool->setStride(nvinfer1::DimsHW{stride, stride});
@@ -378,12 +361,9 @@ nvinfer1::ILayer* netAddMaxpool(int layerIdx,
   return pool;
 }
 
-nvinfer1::ILayer* netAddConvLinear(int layerIdx,
-                                   std::map<std::string, std::string>& block,
-                                   std::vector<float>& weights,
-                                   std::vector<nvinfer1::Weights>& trtWeights,
-                                   size_t& weightPtr, int& inputChannels,
-                                   nvinfer1::ITensor* input,
+nvinfer1::ILayer* netAddConvLinear(int layerIdx, std::map<std::string, std::string>& block,
+                                   std::vector<float>& weights, std::vector<nvinfer1::Weights>& trtWeights,
+                                   size_t& weightPtr, int& inputChannels, nvinfer1::ITensor* input,
                                    nvinfer1::INetworkDefinition* network) {
   assert(block.at("type") == "convolutional");
   assert(block.find("batch_normalize") == block.end());
@@ -421,9 +401,8 @@ nvinfer1::ILayer* netAddConvLinear(int layerIdx,
   }
   convWt.values = val;
   trtWeights.push_back(convWt);
-  nvinfer1::IConvolutionLayer* conv = network->addConvolution(
-      *input, filters, nvinfer1::DimsHW{kernelSize, kernelSize}, convWt,
-      convBias);
+  nvinfer1::IConvolutionLayer* conv =
+      network->addConvolution(*input, filters, nvinfer1::DimsHW{kernelSize, kernelSize}, convWt, convBias);
   assert(conv != nullptr);
   std::string convLayerName = "conv_" + std::to_string(layerIdx);
   conv->setName(convLayerName.c_str());
@@ -433,12 +412,9 @@ nvinfer1::ILayer* netAddConvLinear(int layerIdx,
   return conv;
 }
 
-nvinfer1::ILayer* netAddConvBNLeaky(int layerIdx,
-                                    std::map<std::string, std::string>& block,
-                                    std::vector<float>& weights,
-                                    std::vector<nvinfer1::Weights>& trtWeights,
-                                    size_t& weightPtr, int& inputChannels,
-                                    nvinfer1::ITensor* input,
+nvinfer1::ILayer* netAddConvBNLeaky(int layerIdx, std::map<std::string, std::string>& block,
+                                    std::vector<float>& weights, std::vector<nvinfer1::Weights>& trtWeights,
+                                    size_t& weightPtr, int& inputChannels, nvinfer1::ITensor* input,
                                     nvinfer1::INetworkDefinition* network) {
   assert(block.at("type") == "convolutional");
   assert(block.find("batch_normalize") != block.end());
@@ -510,9 +486,8 @@ nvinfer1::ILayer* netAddConvBNLeaky(int layerIdx,
   trtWeights.push_back(convWt);
   nvinfer1::Weights convBias{nvinfer1::DataType::kFLOAT, nullptr, 0};
   trtWeights.push_back(convBias);
-  nvinfer1::IConvolutionLayer* conv = network->addConvolution(
-      *input, filters, nvinfer1::DimsHW{kernelSize, kernelSize}, convWt,
-      convBias);
+  nvinfer1::IConvolutionLayer* conv =
+      network->addConvolution(*input, filters, nvinfer1::DimsHW{kernelSize, kernelSize}, convWt, convBias);
   assert(conv != nullptr);
   std::string convLayerName = "conv_" + std::to_string(layerIdx);
   conv->setName(convLayerName.c_str());
@@ -528,8 +503,7 @@ nvinfer1::ILayer* netAddConvBNLeaky(int layerIdx,
   nvinfer1::Weights power{nvinfer1::DataType::kFLOAT, nullptr, size};
   float* shiftWt = new float[size];
   for (int i = 0; i < size; ++i) {
-    shiftWt[i] = bnBiases.at(i) -
-                 ((bnRunningMean.at(i) * bnWeights.at(i)) / bnRunningVar.at(i));
+    shiftWt[i] = bnBiases.at(i) - ((bnRunningMean.at(i) * bnWeights.at(i)) / bnRunningVar.at(i));
   }
   shift.values = shiftWt;
   float* scaleWt = new float[size];
@@ -546,8 +520,8 @@ nvinfer1::ILayer* netAddConvBNLeaky(int layerIdx,
   trtWeights.push_back(scale);
   trtWeights.push_back(power);
   // Add the batch norm layers
-  nvinfer1::IScaleLayer* bn = network->addScale(
-      *conv->getOutput(0), nvinfer1::ScaleMode::kCHANNEL, shift, scale, power);
+  nvinfer1::IScaleLayer* bn =
+      network->addScale(*conv->getOutput(0), nvinfer1::ScaleMode::kCHANNEL, shift, scale, power);
   assert(bn != nullptr);
   std::string bnLayerName = "batch_norm_" + std::to_string(layerIdx);
   bn->setName(bnLayerName.c_str());
@@ -564,10 +538,8 @@ nvinfer1::ILayer* netAddConvBNLeaky(int layerIdx,
   return leaky;
 }
 
-nvinfer1::ILayer* netAddUpsample(int layerIdx,
-                                 std::map<std::string, std::string>& block,
-                                 std::vector<float>& weights,
-                                 std::vector<nvinfer1::Weights>& trtWeights,
+nvinfer1::ILayer* netAddUpsample(int layerIdx, std::map<std::string, std::string>& block,
+                                 std::vector<float>& weights, std::vector<nvinfer1::Weights>& trtWeights,
                                  int& inputChannels, nvinfer1::ITensor* input,
                                  nvinfer1::INetworkDefinition* network) {
   assert(block.at("type") == "upsample");
@@ -581,8 +553,7 @@ nvinfer1::ILayer* netAddUpsample(int layerIdx,
   nvinfer1::Dims preDims{
       3,
       {1, stride * h, w},
-      {nvinfer1::DimensionType::kCHANNEL, nvinfer1::DimensionType::kSPATIAL,
-       nvinfer1::DimensionType::kSPATIAL}};
+      {nvinfer1::DimensionType::kCHANNEL, nvinfer1::DimensionType::kSPATIAL, nvinfer1::DimensionType::kSPATIAL}};
   int size = stride * h * w;
   nvinfer1::Weights preMul{nvinfer1::DataType::kFLOAT, nullptr, size};
   float* preWt = new float[size];
@@ -613,8 +584,7 @@ nvinfer1::ILayer* netAddUpsample(int layerIdx,
   nvinfer1::Dims postDims{
       3,
       {1, h, stride * w},
-      {nvinfer1::DimensionType::kCHANNEL, nvinfer1::DimensionType::kSPATIAL,
-       nvinfer1::DimensionType::kSPATIAL}};
+      {nvinfer1::DimensionType::kCHANNEL, nvinfer1::DimensionType::kSPATIAL, nvinfer1::DimensionType::kSPATIAL}};
   size = stride * h * w;
   nvinfer1::Weights postMul{nvinfer1::DataType::kFLOAT, nullptr, size};
   float* postWt = new float[size];
@@ -638,26 +608,22 @@ nvinfer1::ILayer* netAddUpsample(int layerIdx,
   post_m->setName(postLayerName.c_str());
   // add matrix multiply layers for upsampling
   nvinfer1::IMatrixMultiplyLayer* mm1 = network->addMatrixMultiply(
-      *preM->getOutput(0), nvinfer1::MatrixOperation::kNONE, *input,
-      nvinfer1::MatrixOperation::kNONE);
+      *preM->getOutput(0), nvinfer1::MatrixOperation::kNONE, *input, nvinfer1::MatrixOperation::kNONE);
   assert(mm1 != nullptr);
   std::string mm1LayerName = "mm1_" + std::to_string(layerIdx);
   mm1->setName(mm1LayerName.c_str());
-  nvinfer1::IMatrixMultiplyLayer* mm2 = network->addMatrixMultiply(
-      *mm1->getOutput(0), nvinfer1::MatrixOperation::kNONE,
-      *post_m->getOutput(0), nvinfer1::MatrixOperation::kNONE);
+  nvinfer1::IMatrixMultiplyLayer* mm2 =
+      network->addMatrixMultiply(*mm1->getOutput(0), nvinfer1::MatrixOperation::kNONE, *post_m->getOutput(0),
+                                 nvinfer1::MatrixOperation::kNONE);
   assert(mm2 != nullptr);
   std::string mm2LayerName = "mm2_" + std::to_string(layerIdx);
   mm2->setName(mm2LayerName.c_str());
   return mm2;
 }
 
-void printLayerInfo(std::string layerIndex, std::string layerName,
-                    std::string layerInput, std::string layerOutput,
+void printLayerInfo(std::string layerIndex, std::string layerName, std::string layerInput, std::string layerOutput,
                     std::string weightPtr) {
-  std::cout << std::setw(6) << std::left << layerIndex << std::setw(15)
-            << std::left << layerName;
-  std::cout << std::setw(20) << std::left << layerInput << std::setw(20)
-            << std::left << layerOutput;
+  std::cout << std::setw(6) << std::left << layerIndex << std::setw(15) << std::left << layerName;
+  std::cout << std::setw(20) << std::left << layerInput << std::setw(20) << std::left << layerOutput;
   std::cout << std::setw(6) << std::left << weightPtr << std::endl;
 }

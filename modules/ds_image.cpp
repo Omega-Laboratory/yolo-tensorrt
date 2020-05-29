@@ -27,23 +27,22 @@ SOFTWARE.
 #include <experimental/filesystem>
 
 DsImage::DsImage()
-    : m_Height(0),
-      m_Width(0),
-      m_XOffset(0),
-      m_YOffset(0),
-      m_ScalingFactor(0.0),
-      m_RNG(cv::RNG(unsigned(std::time(0)))),
-      m_ImageName() {}
+    : m_Height(0)
+    , m_Width(0)
+    , m_XOffset(0)
+    , m_YOffset(0)
+    , m_ScalingFactor(0.0)
+    , m_RNG(cv::RNG(unsigned(std::time(0))))
+    , m_ImageName() {}
 
-DsImage::DsImage(const cv::Mat& mat_image_, const int& inputH,
-                 const int& inputW)
-    : m_Height(0),
-      m_Width(0),
-      m_XOffset(0),
-      m_YOffset(0),
-      m_ScalingFactor(0.0),
-      m_RNG(cv::RNG(unsigned(std::time(0)))),
-      m_ImageName() {
+DsImage::DsImage(const cv::Mat& mat_image_, const int& inputH, const int& inputW)
+    : m_Height(0)
+    , m_Width(0)
+    , m_XOffset(0)
+    , m_YOffset(0)
+    , m_ScalingFactor(0.0)
+    , m_RNG(cv::RNG(unsigned(std::time(0))))
+    , m_ImageName() {
   m_OrigImage = mat_image_;
 
   if (!m_OrigImage.data || m_OrigImage.cols <= 0 || m_OrigImage.rows <= 0) {
@@ -79,8 +78,7 @@ DsImage::DsImage(const cv::Mat& mat_image_, const int& inputH,
   // assert(2 * m_YOffset + resizeH == inputH);
 
   // resizing
-  cv::resize(mat_image_, m_LetterboxImage, cv::Size(inputW, inputH), 0, 0,
-             cv::INTER_LINEAR);
+  cv::resize(mat_image_, m_LetterboxImage, cv::Size(inputW, inputH), 0, 0, cv::INTER_LINEAR);
   // letterboxing
   /*cv::copyMakeBorder(m_LetterboxImage, m_LetterboxImage, m_YOffset, m_YOffset,
   m_XOffset, m_XOffset, cv::BORDER_CONSTANT, cv::Scalar(128, 128, 128));*/
@@ -88,13 +86,13 @@ DsImage::DsImage(const cv::Mat& mat_image_, const int& inputH,
   // cv::cvtColor(m_LetterboxImage, m_LetterboxImage, cv::COLOR_BGR2RGB);
 }
 DsImage::DsImage(const std::string& path, const int& inputH, const int& inputW)
-    : m_Height(0),
-      m_Width(0),
-      m_XOffset(0),
-      m_YOffset(0),
-      m_ScalingFactor(0.0),
-      m_RNG(cv::RNG(unsigned(std::time(0)))),
-      m_ImageName() {
+    : m_Height(0)
+    , m_Width(0)
+    , m_XOffset(0)
+    , m_YOffset(0)
+    , m_ScalingFactor(0.0)
+    , m_RNG(cv::RNG(unsigned(std::time(0))))
+    , m_ImageName() {
   m_ImageName = std::experimental::filesystem::path(path).stem().string();
   m_OrigImage = cv::imread(path, cv::IMREAD_UNCHANGED);
 
@@ -119,8 +117,10 @@ DsImage::DsImage(const std::string& path, const int& inputH, const int& inputW)
   m_ScalingFactor = static_cast<float>(resizeH) / static_cast<float>(m_Height);
 
   // Additional checks for images with non even dims
-  if ((inputW - resizeW) % 2) resizeW--;
-  if ((inputH - resizeH) % 2) resizeH--;
+  if ((inputW - resizeW) % 2)
+    resizeW--;
+  if ((inputH - resizeH) % 2)
+    resizeH--;
   assert((inputW - resizeW) % 2 == 0);
   assert((inputH - resizeH) % 2 == 0);
 
@@ -131,8 +131,7 @@ DsImage::DsImage(const std::string& path, const int& inputH, const int& inputW)
   assert(2 * m_YOffset + resizeH == inputH);
 
   // resizing
-  cv::resize(m_OrigImage, m_LetterboxImage, cv::Size(inputW, inputH), 0, 0,
-             cv::INTER_CUBIC);
+  cv::resize(m_OrigImage, m_LetterboxImage, cv::Size(inputW, inputH), 0, 0, cv::INTER_CUBIC);
   // letterboxing
   /*cv::copyMakeBorder(m_LetterboxImage, m_LetterboxImage, m_YOffset, m_YOffset,
      m_XOffset, m_XOffset, cv::BORDER_CONSTANT, cv::Scalar(128, 128, 128));*/
@@ -146,17 +145,13 @@ void DsImage::addBBox(BBoxInfo box, const std::string& labelName) {
   const int y = box.box.y1;
   const int w = box.box.x2 - box.box.x1;
   const int h = box.box.y2 - box.box.y1;
-  const cv::Scalar color = cv::Scalar(
-      m_RNG.uniform(0, 255), m_RNG.uniform(0, 255), m_RNG.uniform(0, 255));
+  const cv::Scalar color = cv::Scalar(m_RNG.uniform(0, 255), m_RNG.uniform(0, 255), m_RNG.uniform(0, 255));
 
   cv::rectangle(m_MarkedImage, cv::Rect(x, y, w, h), color, 1);
-  const cv::Size tsize = cv::getTextSize(
-      labelName, cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, 1, nullptr);
-  cv::rectangle(m_MarkedImage,
-                cv::Rect(x, y, tsize.width + 3, tsize.height + 4), color, -1);
-  cv::putText(m_MarkedImage, labelName.c_str(), cv::Point(x, y + tsize.height),
-              cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(255, 255, 255),
-              1);
+  const cv::Size tsize = cv::getTextSize(labelName, cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, 1, nullptr);
+  cv::rectangle(m_MarkedImage, cv::Rect(x, y, tsize.width + 3, tsize.height + 4), color, -1);
+  cv::putText(m_MarkedImage, labelName.c_str(), cv::Point(x, y + tsize.height), cv::FONT_HERSHEY_COMPLEX_SMALL,
+              0.5, cv::Scalar(255, 255, 255), 1);
 }
 
 void DsImage::showImage() const {
@@ -169,7 +164,8 @@ void DsImage::saveImageJPEG(const std::string& dirPath) const {
   cv::imwrite(dirPath + m_ImageName + ".jpeg", m_MarkedImage);
 }
 std::string DsImage::exportJson() const {
-  if (m_Bboxes.size() == 0) return "";
+  if (m_Bboxes.size() == 0)
+    return "";
   std::stringstream json;
   json.precision(2);
   json << std::fixed;
@@ -178,10 +174,9 @@ std::string DsImage::exportJson() const {
     json << "  \"image_id\"         : " << std::stoi(m_ImageName) << ",\n";
     json << "  \"category_id\"      : " << m_Bboxes.at(i).classId << ",\n";
     json << "  \"bbox\"             : ";
-    json << "[" << m_Bboxes.at(i).box.x1 << ", " << m_Bboxes.at(i).box.y1
-         << ", ";
-    json << m_Bboxes.at(i).box.x2 - m_Bboxes.at(i).box.x1 << ", "
-         << m_Bboxes.at(i).box.y2 - m_Bboxes.at(i).box.y1 << "],\n";
+    json << "[" << m_Bboxes.at(i).box.x1 << ", " << m_Bboxes.at(i).box.y1 << ", ";
+    json << m_Bboxes.at(i).box.x2 - m_Bboxes.at(i).box.x1 << ", " << m_Bboxes.at(i).box.y2 - m_Bboxes.at(i).box.y1
+         << "],\n";
     json << "  \"score\"            : " << m_Bboxes.at(i).prob << "\n";
     if (i != m_Bboxes.size() - 1)
       json << "},";

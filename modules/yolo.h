@@ -83,9 +83,7 @@ class Yolo {
  public:
   std::string getNetworkType() const { return m_NetworkType; }
   float getNMSThresh() const { return m_NMSThresh; }
-  std::string getClassName(const int& label) const {
-    return m_ClassNames.at(label);
-  }
+  std::string getClassName(const int& label) const { return m_ClassNames.at(label); }
   int getClassId(const int& label) const { return m_ClassIds.at(label); }
   uint32_t getInputH() const { return m_InputH; }
   uint32_t getInputW() const { return m_InputW; }
@@ -93,14 +91,12 @@ class Yolo {
   bool isPrintPredictions() const { return m_PrintPredictions; }
   bool isPrintPerfInfo() const { return m_PrintPerfInfo; }
   void doInference(const unsigned char* input, const uint32_t batchSize);
-  std::vector<BBoxInfo> decodeDetections(const int& imageIdx, const int& imageH,
-                                         const int& imageW);
+  std::vector<BBoxInfo> decodeDetections(const int& imageIdx, const int& imageH, const int& imageW);
 
   virtual ~Yolo();
 
  protected:
-  Yolo(const uint32_t batchSize, const NetworkInfo& networkInfo,
-       const InferParams& inferParams);
+  Yolo(const uint32_t batchSize, const NetworkInfo& networkInfo, const InferParams& inferParams);
   std::string m_EnginePath;
   const std::string m_NetworkType;
   const std::string m_ConfigFilePath;
@@ -123,11 +119,9 @@ class Yolo {
   std::vector<std::string> m_ClassNames;
   // Class ids for coco benchmarking
   const std::vector<int> m_ClassIds{
-      1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 13, 14, 15, 16, 17,
-      18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 31, 32, 33, 34, 35, 36,
-      37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 51, 52, 53,
-      54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 67, 70, 72, 73,
-      74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90};
+      1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 31,
+      32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+      60, 61, 62, 63, 64, 65, 67, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90};
   const bool m_PrintPerfInfo;
   const bool m_PrintPredictions;
   Logger m_Logger;
@@ -145,24 +139,19 @@ class Yolo {
   PluginFactory* m_PluginFactory;
   std::unique_ptr<YoloTinyMaxpoolPaddingFormula> m_TinyMaxpoolPaddingFormula;
 
-  virtual std::vector<BBoxInfo> decodeTensor(const int imageIdx,
-                                             const int imageH, const int imageW,
+  virtual std::vector<BBoxInfo> decodeTensor(const int imageIdx, const int imageH, const int imageW,
                                              const TensorInfo& tensor) = 0;
 
-  inline void addBBoxProposal(const float bx, const float by, const float bw,
-                              const float bh, const uint32_t stride,
-                              const float scalingFactor, const float xOffset,
-                              const float yOffset, const int maxIndex,
-                              const float maxProb, const uint32_t image_w,
-                              const uint32_t image_h,
-                              std::vector<BBoxInfo>& binfo) {
+  inline void addBBoxProposal(const float bx, const float by, const float bw, const float bh,
+                              const uint32_t stride, const float scalingFactor, const float xOffset,
+                              const float yOffset, const int maxIndex, const float maxProb, const uint32_t image_w,
+                              const uint32_t image_h, std::vector<BBoxInfo>& binfo) {
     BBoxInfo bbi;
     bbi.box = convertBBoxNetRes(bx, by, bw, bh, stride, m_InputW, m_InputH);
     if ((bbi.box.x1 > bbi.box.x2) || (bbi.box.y1 > bbi.box.y2)) {
       return;
     }
-    convertBBoxImgRes(scalingFactor, m_InputW, m_InputH, image_w, image_h,
-                      bbi.box);
+    convertBBoxImgRes(scalingFactor, m_InputW, m_InputH, image_w, image_h, bbi.box);
     bbi.label = maxIndex;
     bbi.prob = maxProb;
     bbi.classId = getClassId(maxIndex);
@@ -170,11 +159,9 @@ class Yolo {
   };
 
  private:
-  void createYOLOEngine(
-      const nvinfer1::DataType dataType = nvinfer1::DataType::kFLOAT,
-      Int8EntropyCalibrator* calibrator = nullptr);
-  std::vector<std::map<std::string, std::string>> parseConfigFile(
-      const std::string cfgFilePath);
+  void createYOLOEngine(const nvinfer1::DataType dataType = nvinfer1::DataType::kFLOAT,
+                        Int8EntropyCalibrator* calibrator = nullptr);
+  std::vector<std::map<std::string, std::string>> parseConfigFile(const std::string cfgFilePath);
   void parseConfigBlocks();
   void allocateBuffers();
   bool verifyYoloEngine();

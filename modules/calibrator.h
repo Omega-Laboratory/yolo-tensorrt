@@ -31,12 +31,9 @@ SOFTWARE.
 
 class Int8EntropyCalibrator : public nvinfer1::IInt8EntropyCalibrator {
  public:
-  Int8EntropyCalibrator(const uint32_t& batchSize,
-                        const std::string& calibImages,
-                        const std::string& calibImagesPath,
-                        const std::string& calibTableFilePath,
-                        const uint64_t& inputSize, const uint32_t& inputH,
-                        const uint32_t& inputW,
+  Int8EntropyCalibrator(const uint32_t& batchSize, const std::string& calibImages,
+                        const std::string& calibImagesPath, const std::string& calibTableFilePath,
+                        const uint64_t& inputSize, const uint32_t& inputH, const uint32_t& inputW,
                         const std::string& inputBlobName);
   virtual ~Int8EntropyCalibrator();
 
