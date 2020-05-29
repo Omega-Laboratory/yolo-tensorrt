@@ -26,10 +26,11 @@ SOFTWARE.
 #ifndef _YOLO_CONFIG_PARSER_
 #define _YOLO_CONFIG_PARSER_
 
-#include "yolo.h"
+#include <gflags/gflags.h>
 
 #include <ctime>
-#include <gflags/gflags.h>
+
+#include "yolo.h"
 
 // Init to be called at the very beginning to verify all config params are valid
 void yoloConfigParserInit(int argc, char** argv);
@@ -49,4 +50,4 @@ std::string getSaveDetectionsPath();
 uint32_t getBatchSize();
 bool getShuffleTestSet();
 
-#endif //_YOLO_CONFIG_PARSER_
+#endif  //_YOLO_CONFIG_PARSER_
