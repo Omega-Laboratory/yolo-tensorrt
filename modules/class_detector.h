@@ -28,7 +28,7 @@ struct Config {
   int gpu_id = 0;
 };
 
-class API Detector {
+class Detector {
  public:
   explicit Detector();
 

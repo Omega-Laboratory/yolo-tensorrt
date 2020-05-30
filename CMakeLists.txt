@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1) 
-project(yolov3-trt)            
+project(yolov3-trt)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -25,7 +25,7 @@ find_package(OpenCV REQUIRED)
 
 #generate detector lib
 cuda_add_library(detector SHARED ${sources})
-target_include_directories(detector PRIVATE
+target_include_directories(detector PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/modules
   ${CMAKE_CURRENT_SOURCE_DIR}/extra
   ${OpenCV_INCLUDE_DIRS}
@@ -34,7 +34,5 @@ target_include_directories(detector PRIVATE
 
 target_link_libraries(detector ${TensorRT_LIBRARY} gflags "stdc++fs")
 				  
-target_include_directories(yolov3-trt PRIVATE modules/ extra/)
+target_include_directories(yolov3-trt PUBLIC ${OpenCV_INCLUDE_DIRS} modules extra)
 target_link_libraries(yolov3-trt detector ${OpenCV_LIBS})
-
-
