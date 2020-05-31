@@ -25,11 +25,12 @@ SOFTWARE.
 #ifndef _CALIBRATOR_H_
 #define _CALIBRATOR_H_
 
+#include "API.h"
 #include "NvInfer.h"
 #include "ds_image.h"
 #include "trt_utils.h"
 
-class Int8EntropyCalibrator : public nvinfer1::IInt8EntropyCalibrator {
+class API Int8EntropyCalibrator : public nvinfer1::IInt8EntropyCalibrator {
  public:
   Int8EntropyCalibrator(const uint32_t& batchSize, const std::string& calibImages,
                         const std::string& calibImagesPath, const std::string& calibTableFilePath,
