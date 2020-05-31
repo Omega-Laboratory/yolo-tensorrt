@@ -25,6 +25,7 @@ SOFTWARE.
 #ifndef _CALIBRATOR_H_
 #define _CALIBRATOR_H_
 
+#include "API.h"
 #include "NvInfer.h"
 #include "ds_image.h"
 #include "trt_utils.h"

@@ -79,3 +79,4 @@ models
 omvnn-models.tgz
 data
 *.jpg
+.venv

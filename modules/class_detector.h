@@ -28,14 +28,15 @@ struct Config {
   int gpu_id = 0;
 };
 
-class Detector {
+class API Detector {
  public:
   explicit Detector();
+  Detector(int);
 
   ~Detector();
 
-  void init(const Config& config);
-  void detect(const cv::Mat& mat_image, std::vector<Result>& vec_result);
+  void Init(const Config& config);
+  void Detect(const cv::Mat& mat_image, std::vector<Result>& vec_result);
 
  private:
   Detector(const Detector&);

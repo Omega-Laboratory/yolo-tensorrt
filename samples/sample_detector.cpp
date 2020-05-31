@@ -10,7 +10,7 @@ int main() {
   //	config.calibration_image_list_file_txt =
   //"../configs/calibration_images.txt";
   config.inference_precison = FP32;
-  detector.init(config);
+  detector.initdd(config);
 
   cv::Mat mat_image = cv::imread("/home/rs/Omega/darknet/data/dog.jpg", cv::IMREAD_UNCHANGED);
 
