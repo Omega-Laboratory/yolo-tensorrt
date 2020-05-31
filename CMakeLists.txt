@@ -17,8 +17,7 @@ set(CXX_SOURCES
   modules/yoloplugin_lib.cpp
   modules/calibrator.cpp
   modules/ds_image.cpp
-  modules/kernel.cu
-)
+  modules/kernel.cu)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
   -Wno-write-strings \
@@ -56,8 +55,7 @@ target_include_directories(detector PUBLIC
 #target_compile_definitions(detector PRIVATE -DAPI_EXPORTS)
 #set_target_properties(detector PROPERTIES
 #  POSITION_INDEPENDENT_CODE ON
-#  CXX_VISIBILITY_PRESET "hidden"
-#)
+#  CXX_VISIBILITY_PRESET "hidden")
 
 # generate detector python module
 add_subdirectory(pybind11)
