@@ -11,20 +11,23 @@ class Detector::Impl {
   YoloDectector _detector;
 };
 
-Detector::Detector() { _impl = new Impl(); }
+Detector::Detector() { impl_ = new Impl(); }
 Detector::~Detector() {
-  if (_impl != nullptr)
-    delete _impl;
+  if (impl_ != nullptr)
+    delete impl_;
 }
 
 void Detector::Init(const Config& config) {
   omv::Logger::Instance().Init(config.log_level);
-
-  _impl->_detector.init(config);
+  impl_->_detector.init(config);
 }
 
-std::vector<Result> Detector::Detect(const cv::Mat& mat_image) {
+void Detector::Detect(const cv::Mat& mat_image, std::vector<Result>& result) {
+  impl_->_detector.detect(mat_image, result);
+}
+
+std::vector<Result> Detector::Detect2(const cv::Mat& mat_image) {
   std::vector<Result> vec_result;
-  _impl->_detector.detect(mat_image, vec_result);
+  impl_->_detector.detect(mat_image, vec_result);
   return vec_result;
 }

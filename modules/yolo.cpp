@@ -379,7 +379,7 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
      m_BatchSize << std::endl;*/
 
   m_Builder->setMaxBatchSize(m_BatchSize);
-  m_Builder->setMaxWorkspaceSize(1 << 26);
+  m_Builder->setMaxWorkspaceSize(1 << 30);
 
   if (dataType == nvinfer1::DataType::kINT8) {
     assert((calibrator != nullptr) && "Invalid calibrator for INT8 precision");

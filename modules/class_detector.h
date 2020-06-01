@@ -37,13 +37,14 @@ class API Detector {
   ~Detector();
 
   void Init(const Config& config);
-  std::vector<Result> Detect(const cv::Mat& mat_image);
+  void Detect(const cv::Mat& mat_image, std::vector<Result>&);
+  std::vector<Result> Detect2(const cv::Mat& mat_image);
 
  private:
   Detector(const Detector&);
   const Detector& operator=(const Detector&);
   class Impl;
-  Impl* _impl;
+  Impl* impl_;
 };
 
 #endif  // !CLASS_QH_DETECTOR_H_

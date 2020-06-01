@@ -158,7 +158,8 @@ PYBIND11_MODULE(pydetector, m) {
   pybind11::class_<Detector>(m, "Detector")
       .def(pybind11::init<>())
       .def("init", &Detector::Init)
-      .def("detect", &Detector::Detect);
+      .def("detect", &Detector::Detect2,
+           pybind11::return_value_policy::move);
 
   /* clang-format on */
 }
