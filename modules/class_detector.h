@@ -34,11 +34,10 @@ class API Detector {
  public:
   explicit Detector();
   Detector(int);
-
   ~Detector();
 
   void Init(const Config& config);
-  std::vector<Result> Detect(/*const cv::Mat& mat_image*/);
+  std::vector<Result> Detect(const cv::Mat& mat_image);
 
  private:
   Detector(const Detector&);

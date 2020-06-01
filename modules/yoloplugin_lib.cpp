@@ -168,13 +168,13 @@ std::vector<YoloPluginOutput*> YoloPluginProcess(YoloPluginCtx* ctx, std::vector
 
 void YoloPluginCtxDeinit(YoloPluginCtx* ctx) {
   if (ctx->inferParams.printPerfInfo) {
-    std::cout << "Yolo Plugin Perf Summary " << std::endl;
-    std::cout << "Batch Size : " << ctx->batchSize << std::endl;
-    std::cout << std::fixed << std::setprecision(4) << "PreProcess : " << ctx->preTime / ctx->imageCount
+    LOG(INFO) << "Yolo Plugin Perf Summary";
+    LOG(INFO) << "Batch Size : " << ctx->batchSize;
+    LOG(INFO) << std::fixed << std::setprecision(4) << "PreProcess : " << ctx->preTime / ctx->imageCount
               << " ms Inference : " << ctx->inferTime / ctx->imageCount
               << " ms PostProcess : " << ctx->postTime / ctx->imageCount
               << " ms Total : " << (ctx->preTime + ctx->postTime + ctx->inferTime) / ctx->imageCount
-              << " ms per Image" << std::endl;
+              << " ms per Image";
   }
 
   delete ctx->inferenceNetwork;

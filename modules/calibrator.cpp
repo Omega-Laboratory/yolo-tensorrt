@@ -85,12 +85,12 @@ const void* Int8EntropyCalibrator::readCalibrationCache(size_t& length) {
 
   length = m_CalibrationCache.size();
   if (length) {
-    std::cout << "Using cached calibration table to build the engine" << std::endl;
+    LOG(INFO) << "Using cached calibration table to build the engine";
     output = &m_CalibrationCache[0];
   }
 
   else {
-    std::cout << "New calibration table will be created to build the engine" << std::endl;
+    LOG(INFO) << "New calibration table will be created to build the engine";
     output = nullptr;
   }
 

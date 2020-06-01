@@ -71,7 +71,7 @@ Yolo::Yolo(const uint32_t batchSize, const NetworkInfo& networkInfo, const Infer
   } else if (m_Precision == "kHALF") {
     createYOLOEngine(nvinfer1::DataType::kHALF, nullptr);
   } else {
-    std::cout << "Unrecognized precision type " << m_Precision << std::endl;
+    LOG(ERROR) << "Unrecognized precision type " << m_Precision;
     assert(0);
   }
   assert(m_PluginFactory != nullptr);
@@ -121,7 +121,7 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
 
   if ((dataType == nvinfer1::DataType::kINT8 && !m_Builder->platformHasFastInt8()) ||
       (dataType == nvinfer1::DataType::kHALF && !m_Builder->platformHasFastFp16())) {
-    std::cout << "Platform doesn't support this precision." << std::endl;
+    LOG(ERROR) << "Platform doesn't support this precision.";
     assert(0);
   }
 
@@ -260,9 +260,9 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
       tensorOutputs.push_back(region->getOutput(0));
       //    printLayerInfo(layerIndex, "region", inputVol, outputVol,
       //    std::to_string(weightPtr));
-      std::cout << "Anchors are being converted to network input resolution "
+      LOG(INFO) << "Anchors are being converted to network input resolution "
                    "i.e. Anchors x "
-                << curRegionTensor.stride << " (stride)" << std::endl;
+                << curRegionTensor.stride << " (stride)";
       for (auto& anchor : curRegionTensor.anchors)
         anchor *= curRegionTensor.stride;
       ++outputTensorCount;
@@ -398,7 +398,7 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
     if (m_DeviceType == "kDLA" && m_Builder->canRunOnDLA(curLayer)) {
       m_Builder->setDeviceType(curLayer, nvinfer1::DeviceType::kDLA);
       layersOnDLA++;
-      std::cout << "Set layer " << curLayer->getName() << " to run on DLA" << std::endl;
+      LOG(INFO) << "Set layer " << curLayer->getName() << " to run on DLA";
     }
   }
   //   std::cout << "Total number of layers on DLA: " << layersOnDLA <<

@@ -66,9 +66,7 @@ class YoloDectector {
     _config = config;
 
     this->set_gpu_id(_config.gpu_id);
-
     this->parse_config();
-
     this->build_net();
   }
 
@@ -100,7 +98,7 @@ class YoloDectector {
   void set_gpu_id(const int id = 0) {
     cudaError_t status = cudaSetDevice(id);
     if (status != cudaSuccess) {
-      std::cout << "gpu id :" + std::to_string(id) + " not exist !" << std::endl;
+      LOG(ERROR) << "gpu id:" + std::to_string(id) + " not exist!";
       assert(0);
     }
   }

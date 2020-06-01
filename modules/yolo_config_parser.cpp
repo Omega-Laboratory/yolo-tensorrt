@@ -98,7 +98,7 @@ static bool networkTypeValidator(const char* flagName, std::string value) {
     return true;
 
   else
-    std::cout << "Invalid value for --" << flagName << ": " << value << std::endl;
+    LOG(ERROR) << "Invalid value for --" << flagName << ": " << value;
 
   return false;
 }
@@ -107,7 +107,7 @@ static bool precisionTypeValidator(const char* flagName, std::string value) {
   if ((FLAGS_precision == "kFLOAT") || (FLAGS_precision == "kINT8") || (FLAGS_precision == "kHALF"))
     return true;
   else
-    std::cout << "Invalid value for --" << flagName << ": " << value << std::endl;
+    LOG(ERROR) << "Invalid value for --" << flagName << ": " << value;
   return false;
 }
 

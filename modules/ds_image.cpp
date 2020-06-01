@@ -46,11 +46,11 @@ DsImage::DsImage(const cv::Mat& mat_image_, const int& inputH, const int& inputW
   m_OrigImage = mat_image_;
 
   if (!m_OrigImage.data || m_OrigImage.cols <= 0 || m_OrigImage.rows <= 0) {
-    std::cout << "empty image !" << std::endl;
+    LOG(ERROR) << "empty image !";
     assert(0);
   }
   if (m_OrigImage.channels() != 3) {
-    std::cout << "Non RGB images are not supported " << std::endl;
+    LOG(ERROR) << "Non RGB images are not supported";
     assert(0);
   }
 
@@ -97,12 +97,12 @@ DsImage::DsImage(const std::string& path, const int& inputH, const int& inputW)
   m_OrigImage = cv::imread(path, cv::IMREAD_UNCHANGED);
 
   if (!m_OrigImage.data || m_OrigImage.cols <= 0 || m_OrigImage.rows <= 0) {
-    std::cout << "Unable to open image : " << path << std::endl;
+    LOG(ERROR) << "Unable to open image : " << path;
     assert(0);
   }
 
   if (m_OrigImage.channels() != 3) {
-    std::cout << "Non RGB images are not supported : " << path << std::endl;
+    LOG(ERROR) << "Non RGB images are not supported : " << path;
     assert(0);
   }
 

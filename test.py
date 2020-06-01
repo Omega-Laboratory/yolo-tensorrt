@@ -1,4 +1,5 @@
 from pydetector import Config, Detector, Result
+import cv2
 
 config = Config()
 
@@ -13,10 +14,11 @@ config.log_level = Config.INFO
 yolo = Detector()
 yolo.init(config)
 
+img = cv2.imread("/home/rs/Omega/darknet/data/dog.jpg")
 
-res = yolo.detect()
+res = yolo.detect(img)
 
 for r in res:
-    print("%s %f %s" % (r.id, r.prob, r.rect))
+    print("predicted: %s %f %s" % (r.id, r.prob, r.rect))
 
 # help("pydetector")
