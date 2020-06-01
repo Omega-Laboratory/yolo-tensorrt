@@ -405,10 +405,10 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
   //   std::endl;
 
   // Build the engine
-  std::cout << "Building the TensorRT Engine..." << std::endl;
+  LOG(INFO) << "Building the TensorRT Engine...";
   m_Engine = m_Builder->buildCudaEngine(*m_Network);
   assert(m_Engine != nullptr);
-  std::cout << "Building complete!" << std::endl;
+  LOG(INFO) << "Building complete!";
 
   // Serialize the engine
   writePlanFileToDisk();
@@ -591,7 +591,7 @@ void Yolo::destroyNetworkUtils(std::vector<nvinfer1::Weights>& trtWeights) {
 }
 
 void Yolo::writePlanFileToDisk() {
-  std::cout << "Serializing the TensorRT Engine..." << std::endl;
+  LOG(INFO) << "Serializing the TensorRT Engine...";
   assert(m_Engine && "Invalid TensorRT Engine");
   m_ModelStream = m_Engine->serialize();
   assert(m_ModelStream && "Unable to serialize engine");
@@ -606,5 +606,5 @@ void Yolo::writePlanFileToDisk() {
   outFile << gieModelStream.rdbuf();
   outFile.close();
 
-  std::cout << "Serialized plan file cached at location : " << m_EnginePath << std::endl;
+  LOG(INFO) << "Serialized plan file cached at location : " << m_EnginePath;
 }

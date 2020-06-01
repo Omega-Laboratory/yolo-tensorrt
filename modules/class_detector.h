@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "API.h"
+#include "logger.h"
 
 struct Result {
   int id = -1;
@@ -13,16 +14,17 @@ struct Result {
   cv::Rect rect;
 };
 
-enum ModelType { YOLOV2 = 0, YOLOV3, YOLOV2_TINY, YOLOV3_TINY };
-enum Precision { INT8 = 0, FP16, FP32 };
-
 struct Config {
+  enum ModelType { YOLOV2 = 0, YOLOV3, YOLOV2_TINY, YOLOV3_TINY };
+  enum Precision { INT8 = 0, FP16, FP32 };
+
   std::string file_model_cfg{"configs/yolov3.cfg"};
   std::string file_model_weights{"configs/yolov3.weights"};
   std::string calibration_image_list_file_txt{};
 
+  OmvSeverity log_level{OmvSeverity::WARN};
   ModelType net_type{YOLOV3};
-  Precision inference_precison{FP32};
+  Precision precison{FP32};
 
   float detect_thresh = 0.9;
   int gpu_id = 0;

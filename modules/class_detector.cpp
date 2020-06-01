@@ -21,8 +21,7 @@ Detector::~Detector() {
 }
 
 void Detector::Init(const Config& config) {
-  omv::Logger::Instance().Init(3);
-  LOG(INFO) << config.file_model_cfg;
+  omv::Logger::Instance().Init(config.log_level);
 
   _impl->_detector.init(config);
 }

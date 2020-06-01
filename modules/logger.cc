@@ -25,6 +25,13 @@ void Logger::Init(int severity) {
     severity_ = OmvSeverity::DEBUG;
 }
 
+void Logger::Init(OmvSeverity severity) {
+  if (severity > OmvSeverity::MAIN && severity <= OmvSeverity::DEBUG)
+    severity_ = severity;
+  else
+    severity_ = OmvSeverity::DEBUG;
+}
+
 std::string Logger::ts() {
   std::time_t t = std::time(nullptr);
   std::tm tm = *std::localtime(&t);

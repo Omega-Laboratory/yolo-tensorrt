@@ -109,7 +109,7 @@ class YoloDectector {
     _yolo_info.networkType = _vec_net_type[_config.net_type];
     _yolo_info.configFilePath = _config.file_model_cfg;
     _yolo_info.wtsFilePath = _config.file_model_weights;
-    _yolo_info.precision = _vec_precision[_config.inference_precison];
+    _yolo_info.precision = _vec_precision[_config.precison];
     _yolo_info.deviceType = "kGPU";
     size_t npos = _yolo_info.wtsFilePath.find(".weights");
     assert(npos != std::string::npos && "wts file file not recognised. File needs to be of '.weights' format");
@@ -127,9 +127,9 @@ class YoloDectector {
   }
 
   void build_net() {
-    if ((_config.net_type == YOLOV2) || (_config.net_type == YOLOV2_TINY)) {
+    if ((_config.net_type == Config::YOLOV2) || (_config.net_type == Config::YOLOV2_TINY)) {
       _p_net = std::unique_ptr<Yolo>{new YoloV2(1, _yolo_info, _infer_param)};
-    } else if ((_config.net_type == YOLOV3) || (_config.net_type == YOLOV3_TINY)) {
+    } else if ((_config.net_type == Config::YOLOV3) || (_config.net_type == Config::YOLOV3_TINY)) {
       _p_net = std::unique_ptr<Yolo>{new YoloV3(1, _yolo_info, _infer_param)};
     } else {
       assert(false &&

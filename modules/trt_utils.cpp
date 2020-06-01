@@ -59,7 +59,7 @@ float clamp(const float val, const float minVal, const float maxVal) {
 bool fileExists(const std::string fileName, bool verbose) {
   if (!std::experimental::filesystem::exists(std::experimental::filesystem::path(fileName))) {
     if (verbose)
-      std::cout << "File does not exist : " << fileName << std::endl;
+      LOG(INFO) << "File does not exist: " << fileName;
     return false;
   }
   return true;

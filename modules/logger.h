@@ -54,6 +54,8 @@ class Logger : public nvinfer1::ILogger {
   static std::string ts();
 
   void Init(int severity = 1);
+  void Init(OmvSeverity severity = ERROR);
+
   void log(Severity severity, const char* msg) override;
 
   inline std::ostream& log_stream(OmvSeverity severity) {
@@ -134,7 +136,7 @@ inline std::string ComputeMethodName(const std::string& pretty_function) {
 
 #define VERY_PRETTY_NAME ComputeMethodName(__PRETTY_FUNCTION__)
 #define LOG(x) \
-  omv::Logger::Instance().log_stream(x) << omv::Endl(x) << '[' << VERY_PRETTY_NAME << ':' << __LINE__ << "] "
+  omv::Logger::Instance().log_stream(x) << omv::Endl(x) << '[' << __FUNCTION__ << ':' << __LINE__ << "] "
 #define LOGX LOG(omv::MAIN)
 
 #endif  // LOGGER_H
