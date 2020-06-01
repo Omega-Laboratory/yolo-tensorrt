@@ -47,7 +47,7 @@ Yolo::Yolo(const uint32_t batchSize, const NetworkInfo& networkInfo, const Infer
     , m_NMSThresh(inferParams.nmsThresh)
     , m_PrintPerfInfo(inferParams.printPerfInfo)
     , m_PrintPredictions(inferParams.printPredictionInfo)
-    , m_Logger(Logger())
+    , m_Logger(omv::Logger::Instance())
     , m_BatchSize(batchSize)
     , m_Network(nullptr)
     , m_Builder(nullptr)
@@ -352,13 +352,13 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
       //    printLayerInfo(layerIndex, "maxpool", inputVol, outputVol,
       //    std::to_string(weightPtr));
     } else {
-      std::cout << "Unsupported layer type --> \"" << m_configBlocks.at(i).at("type") << "\"" << std::endl;
+      LOG(ERROR) << "Unsupported layer type --> \"" << m_configBlocks.at(i).at("type") << "\"";
       assert(0);
     }
   }
 
   if (weights.size() != weightPtr) {
-    std::cout << "Number of unused weights left : " << weights.size() - weightPtr << std::endl;
+    LOG(ERROR) << "Number of unused weights left : " << weights.size() - weightPtr;
     assert(0);
   }
 
@@ -368,7 +368,7 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
 
   // Create and cache the engine if not already present
   if (fileExists(m_EnginePath)) {
-    std::cout << "Using previously generated plan file located at " << m_EnginePath << std::endl;
+    LOG(INFO) << "Using previously generated plan file located at " << m_EnginePath;
     destroyNetworkUtils(trtWeights);
     return;
   }

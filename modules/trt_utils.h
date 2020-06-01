@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include "NvInfer.h"
 #include "ds_image.h"
+#include "logger.h"
 #include "plugin_factory.h"
 
 class DsImage;
@@ -53,6 +54,7 @@ struct BBoxInfo {
   float prob;
 };
 
+/*
 class Logger : public nvinfer1::ILogger {
  public:
   void log(nvinfer1::ILogger::Severity severity, const char* msg) override {
@@ -80,6 +82,7 @@ class Logger : public nvinfer1::ILogger {
     std::cerr << msg << std::endl;
   }
 };
+*/
 
 class YoloTinyMaxpoolPaddingFormula : public nvinfer1::IOutputDimensionsFormula {
  private:
@@ -127,7 +130,8 @@ std::vector<std::string> loadImageList(const std::string filename, const std::st
 std::vector<BBoxInfo> nmsAllClasses(const float nmsThresh, std::vector<BBoxInfo>& binfo,
                                     const uint32_t numClasses);
 std::vector<BBoxInfo> nonMaximumSuppression(const float nmsThresh, std::vector<BBoxInfo> binfo);
-nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath, PluginFactory* pluginFactory, Logger& logger);
+nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath, PluginFactory* pluginFactory,
+                                     omv::Logger& logger);
 std::vector<float> loadWeights(const std::string weightsFilePath, const std::string& networkType);
 std::string dimsToString(const nvinfer1::Dims d);
 void displayDimType(const nvinfer1::Dims d);

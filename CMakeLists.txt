@@ -8,6 +8,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CXX_SOURCES
   modules/class_detector.cpp
+  modules/logger.cc
   modules/trt_utils.cpp
   modules/plugin_factory.cpp
   modules/yolo_config_parser.cpp

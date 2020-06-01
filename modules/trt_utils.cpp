@@ -109,9 +109,9 @@ void convertBBoxImgRes(const float scalingFactor,
 }
 
 void printPredictions(const BBoxInfo& b, const std::string& className) {
-  std::cout << " label:" << b.label << "(" << className << ")"
+  LOG(INFO) << " label:" << b.label << "(" << className << ")"
             << " confidence:" << b.prob << " xmin:" << b.box.x1 << " ymin:" << b.box.y1 << " xmax:" << b.box.x2
-            << " ymax:" << b.box.y2 << std::endl;
+            << " ymax:" << b.box.y2;
 }
 
 std::vector<std::string> loadListFromTextFile(const std::string filename) {
@@ -120,7 +120,7 @@ std::vector<std::string> loadListFromTextFile(const std::string filename) {
 
   std::ifstream f(filename);
   if (!f) {
-    std::cout << "failed to open " << filename;
+    LOG(ERROR) << "failed to open " << filename;
     assert(0);
   }
 
@@ -146,7 +146,7 @@ std::vector<std::string> loadImageList(const std::string filename, const std::st
       if (fileExists(prefixed, false))
         file = prefixed;
       else
-        std::cerr << "WARNING: couldn't find: " << prefixed << " while loading: " << filename << std::endl;
+        LOG(WARN) << "WARNING: couldn't find: " << prefixed << " while loading: " << filename;
     }
   }
   return fileList;
@@ -205,9 +205,9 @@ std::vector<BBoxInfo> nonMaximumSuppression(const float nmsThresh, std::vector<B
 }
 
 nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath, PluginFactory* pluginFactory,
-                                     Logger& logger) {
+                                     omv::Logger& logger) {
   // reading the model in memory
-  std::cout << "Loading TRT Engine..." << std::endl;
+  LOG(INFO) << "Loading TRT Engine...";
   assert(fileExists(planFilePath));
   std::stringstream trtModelStream;
   trtModelStream.seekg(0, trtModelStream.beg);
@@ -227,7 +227,7 @@ nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath, PluginFacto
   nvinfer1::ICudaEngine* engine = runtime->deserializeCudaEngine(modelMem, modelSize, pluginFactory);
   free(modelMem);
   runtime->destroy();
-  std::cout << "Loading Complete!" << std::endl;
+  LOG(INFO) << "Loading Complete!";
 
   return engine;
 }
@@ -250,7 +250,7 @@ nvinfer1::ICudaEngine* loadTRTEngine(const std::string planFilePath, PluginFacto
 //}
 std::vector<float> loadWeights(const std::string weightsFilePath, const std::string& networkType) {
   assert(fileExists(weightsFilePath));
-  std::cout << "Loading pre-trained weights..." << std::endl;
+  LOG(INFO) << "Loading pre-trained weights...";
   // std::ifstream file(weightsFilePath, std::ios_base::binary);
   // assert(file.good());
   // std::string line;
@@ -277,7 +277,7 @@ std::vector<float> loadWeights(const std::string weightsFilePath, const std::str
   } else if ((int)(unsigned char)buf[0] == 2) {
     file.ignore(15);
   } else {
-    std::cout << "Invalid network type" << std::endl;
+    LOG(ERROR) << "Invalid network type";
     assert(0);
   }
 
@@ -290,7 +290,7 @@ std::vector<float> loadWeights(const std::string weightsFilePath, const std::str
     if (file.peek() == std::istream::traits_type::eof())
       break;
   }
-  std::cout << "Loading complete!" << std::endl;
+  LOG(INFO) << "Loading complete!";
   delete[] floatWeight;
 
   // std::cout << "Total Number of weights read : " << weights.size() <<

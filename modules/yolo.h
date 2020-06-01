@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "NvInfer.h"
 #include "calibrator.h"
+#include "logger.h"
 #include "plugin_factory.h"
 #include "trt_utils.h"
 
@@ -124,7 +125,7 @@ class Yolo {
       60, 61, 62, 63, 64, 65, 67, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90};
   const bool m_PrintPerfInfo;
   const bool m_PrintPredictions;
-  Logger m_Logger;
+  omv::Logger& m_Logger;
 
   // TRT specific members
   const uint32_t m_BatchSize;
