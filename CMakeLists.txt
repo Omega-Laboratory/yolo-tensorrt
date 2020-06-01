@@ -16,7 +16,8 @@ set(CXX_SOURCES
   modules/yolov3.cpp
   modules/yoloplugin_lib.cpp
   modules/calibrator.cpp
-  modules/ds_image.cpp
+  modules/ds_image.cpp)
+set(CUDA_SOURCES
   modules/kernel.cu)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
@@ -43,8 +44,15 @@ if(NOT gflags_FOUND)
 endif()
 
 # generate detector lib
-add_library(detector SHARED ${CXX_SOURCES})
-target_link_libraries(detector PRIVATE ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${TensorRT_LIBRARY} gflags "stdc++fs")
+set(COMMON_LIBS
+  ${CUDA_LIBRARIES}
+  ${OpenCV_LIBS}
+  ${TensorRT_LIBRARY}
+  gflags
+  "stdc++fs")
+
+add_library(detector SHARED ${CXX_SOURCES} ${CUDA_SOURCES})
+target_link_libraries(detector PRIVATE ${COMMON_LIBS})
 target_include_directories(detector PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/modules
   ${CMAKE_CURRENT_SOURCE_DIR}/extra
@@ -62,7 +70,7 @@ add_subdirectory(pybind11)
 set(PYBIND11_CPP_STANDARD -std=c++14)
 
 pybind11_add_module(pydetector MODULE THIN_LTO ${CMAKE_CURRENT_SOURCE_DIR}/wrapper/pydetector.cc)
-target_link_libraries(pydetector PRIVATE ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${TensorRT_LIBRARY} gflags "stdc++fs" detector)
+target_link_libraries(pydetector PRIVATE ${COMMON_LIBS} detector)
 
 # generate detector sample app
 #add_executable(yolov3-trt samples/sample_detector.cpp)
