@@ -38,7 +38,7 @@ class API Detector {
   ~Detector();
 
   void Init(const Config& config);
-  void Detect(const cv::Mat& mat_image, std::vector<Result>& vec_result);
+  std::vector<Result> Detect(/*const cv::Mat& mat_image*/);
 
  private:
   Detector(const Detector&);

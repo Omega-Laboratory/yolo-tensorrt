@@ -1,6 +1,36 @@
 #include "pybind11/pybind11.h"
+#include "pybind11/stl.h"
 
 #include "class_detector.h"
+
+namespace pybind11 {
+namespace detail {
+template <>
+struct type_caster<cv::Rect> {
+  PYBIND11_TYPE_CASTER(cv::Rect, _("tuple_xywh"));
+
+  bool load(handle obj, bool) {
+    if (!pybind11::isinstance<pybind11::tuple>(obj)) {
+      std::logic_error("Rect should be a tuple!");
+      return false;
+    }
+    pybind11::tuple rect = reinterpret_borrow<pybind11::tuple>(obj);
+    if (rect.size() != 4) {
+      std::logic_error("Rect (x,y,w,h) tuple should be size of 4");
+      return false;
+    }
+
+    value = cv::Rect(rect[0].cast<int>(), rect[1].cast<int>(), rect[2].cast<int>(), rect[3].cast<int>());
+    return true;
+  }
+
+  static handle cast(const cv::Rect& rect, return_value_policy, handle) {
+    return pybind11::make_tuple(rect.x, rect.y, rect.width, rect.height).release();
+  }
+};
+
+}  // namespace detail
+}  // namespace pybind11
 
 PYBIND11_MODULE(pydetector, m) {
   m.doc() = "pybind11 yolo detector trt plugin";
@@ -40,9 +70,15 @@ PYBIND11_MODULE(pydetector, m) {
       .value("FP32", Config::Precision::FP32)
       .export_values();
 
+  pybind11::class_<Result>(m, "Result")
+      .def_readwrite("id",&Result::id)
+      .def_readwrite("prob",&Result::prob)
+      .def_readwrite("rect",&Result::rect);
+
   pybind11::class_<Detector>(m, "Detector")
       .def(pybind11::init<>())
-      .def("init", &Detector::Init);
+      .def("init", &Detector::Init)
+      .def("detect", &Detector::Detect);
 
   /* clang-format on */
 }
