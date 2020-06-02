@@ -115,6 +115,7 @@ class YoloDectector {
     _yolo_info.calibrationTablePath = dataPath + "-calibration.table";
     _yolo_info.enginePath = dataPath + "-" + _yolo_info.precision + ".engine";
     _yolo_info.inputBlobName = "data";
+    _yolo_info.max_workspace_size = _config.max_workspace_size;
 
     _infer_param.printPerfInfo = false;
     _infer_param.printPredictionInfo = false;

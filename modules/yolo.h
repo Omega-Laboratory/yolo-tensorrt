@@ -50,6 +50,7 @@ struct NetworkInfo {
   std::string calibrationTablePath;
   std::string enginePath;
   std::string inputBlobName;
+  std::size_t max_workspace_size;
 };
 
 /**
@@ -109,6 +110,7 @@ class Yolo {
   const std::string m_CalibImagesFilePath;
   std::string m_CalibTableFilePath;
   const std::string m_InputBlobName;
+  const std::size_t m_MaxWorkSpaceSize;
   std::vector<TensorInfo> m_OutputTensors;
   std::vector<std::map<std::string, std::string>> m_configBlocks;
   uint32_t m_InputH;

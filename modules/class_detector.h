@@ -26,8 +26,9 @@ struct Config {
   ModelType net_type{YOLOV3};
   Precision precison{FP32};
 
-  float detect_thresh = 0.9;
-  int gpu_id = 0;
+  std::size_t max_workspace_size{1 << 30};
+  float detect_thresh{0.9};
+  int gpu_id{0};
 };
 
 class API Detector {

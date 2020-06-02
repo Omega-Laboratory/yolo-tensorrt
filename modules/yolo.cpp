@@ -39,6 +39,7 @@ Yolo::Yolo(const uint32_t batchSize, const NetworkInfo& networkInfo, const Infer
     , m_CalibImagesFilePath(inferParams.calibImagesPath)
     , m_CalibTableFilePath(networkInfo.calibrationTablePath)
     , m_InputBlobName(networkInfo.inputBlobName)
+    , m_MaxWorkSpaceSize(networkInfo.max_workspace_size)
     , m_InputH(0)
     , m_InputW(0)
     , m_InputC(0)
@@ -379,7 +380,7 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
      m_BatchSize << std::endl;*/
 
   m_Builder->setMaxBatchSize(m_BatchSize);
-  m_Builder->setMaxWorkspaceSize(1 << 30);
+  m_Builder->setMaxWorkspaceSize(m_MaxWorkSpaceSize);
 
   if (dataType == nvinfer1::DataType::kINT8) {
     assert((calibrator != nullptr) && "Invalid calibrator for INT8 precision");

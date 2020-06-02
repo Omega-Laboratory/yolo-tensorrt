@@ -124,6 +124,7 @@ PYBIND11_MODULE(pydetector, m) {
       .def_readwrite("calibration_image_list_file_txt",
                      &Config::calibration_image_list_file_txt)
       .def_readwrite("detect_thresh",&Config::detect_thresh)
+      .def_readwrite("max_workspace_size", &Config::max_workspace_size)
       .def_readwrite("gpu_id",&Config::gpu_id)
       .def_readwrite("net_type",&Config::net_type)
       .def_readwrite("precision",&Config::precison)

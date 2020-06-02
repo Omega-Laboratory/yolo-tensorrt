@@ -109,7 +109,7 @@ endif()
 if(YOTRT_BUILD_EXAMPLE)
   add_executable(yolov3-trt samples/sample_detector.cpp)
   target_include_directories(yolov3-trt PUBLIC ${OpenCV_INCLUDE_DIRS} modules extra)
-  target_link_libraries(yolov3-trt detector ${OpenCV_LIBS})
+  target_link_libraries(yolov3-trt detector ${OpenCV_LIBS} Threads::Threads)
   install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 endif()
 
