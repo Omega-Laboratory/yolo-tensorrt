@@ -55,7 +55,7 @@ find_package(Threads REQUIRED)
 find_Package(gflags REQUIRED)
 
 if(NOT gflags_FOUND)
- message(FATAL "gflags not found")
+ message(_ERROR "gflags not found")
 endif()
 
 # generate detector lib
