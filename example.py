@@ -20,7 +20,7 @@ YOLO_CONFIG.max_workspace_size = 1 << 30
 
 def producer(cv, queue, stopped):
     os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "video_codec;h264_cuvid|fflags;nobuffer|flags;low_latency|framedrop|framerate;15|rtsp_transport;tcp"
-    cap = cv2.VideoCapture("rtsp://96.89.47.33:554/live/ch00_0", cv2.CAP_FFMPEG)
+    cap = cv2.VideoCapture("rtsp://212.80.86.68:554/live/ch00_0", cv2.CAP_FFMPEG)
 
     while(not stopped.is_set()):
         ret, frame = cap.read()
@@ -30,9 +30,9 @@ def producer(cv, queue, stopped):
 
         with cv:
             if queue.qsize() >= 4:
-                queue.get()
+                queue.get_nowait()
 
-            queue.put(frame)
+            queue.put_nowait(frame)
             cv.notify_all()
 
     cap.release()
@@ -43,13 +43,15 @@ def consumer(cv, queue, stopped):
     yolo.init(YOLO_CONFIG)
 
     while(not stopped.is_set()):
+        frame = None
+
         with cv:
             cv.wait()
 
             if(queue.empty()):
-                break
+                stopped.set()
 
-            frame = queue.get()
+            frame = queue.get_nowait()
 
         if frame is not None:
             start = time.time()
@@ -83,6 +85,7 @@ if __name__ == "__main__":
 
     for thr in threads:
         thr.start()
+
     for thr in threads:
         thr.join()
 
